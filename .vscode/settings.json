@@ -13,6 +13,8 @@
   ],
   "[vue]": {
     "editor.autoClosingBrackets": "always",
-    "editor.autoClosingQuotes": "always"
+    "editor.autoClosingQuotes": "always",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
   }
 }
