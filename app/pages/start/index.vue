@@ -1,7 +1,6 @@
 <script setup>
-const router = useRouter()
-const navToAuth = () => router.push('/auth')
-const navToAmbagan = () => router.push('/ambagan')
+const navToAuth = () => navigateTo("/login")
+const navToAmbagan = () => navigateTo("/ambagan")
 </script>
 
 <template>

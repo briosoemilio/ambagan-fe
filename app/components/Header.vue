@@ -1,30 +1,20 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import { useUser } from '~/composables/useUser'
+import { useFirebaseAuth } from 'vuefire'
+import { signOut } from 'firebase/auth'
 
-const route = useRoute()
+const auth = useFirebaseAuth()
 
-const items = computed<NavigationMenuItem[]>(() => [
-  {
-    label: 'Docs',
-    to: '/docs/getting-started',
-    active: route.path.startsWith('/docs/getting-started')
-  },
-  {
-    label: 'Components',
-    to: '/docs/components',
-    active: route.path.startsWith('/docs/components')
-  },
-  {
-    label: 'Figma',
-    to: 'https://go.nuxt.com/figma-ui',
-    target: '_blank'
-  },
-  {
-    label: 'Releases',
-    to: 'https://github.com/nuxt/ui/releases',
-    target: '_blank'
+const user = useUser()
+const isLoggedIn = computed(() => user.value !== null)
+
+const logout = async () => {
+  if (auth) {
+    console.log("logging out user:", user.value)
+    await signOut(auth)
+    navigateTo('/')
   }
-])
+}
 </script>
 
 <template>
@@ -36,11 +26,11 @@ const items = computed<NavigationMenuItem[]>(() => [
 
     <template #right>
       <UColorModeButton />
-
-      <UTooltip text="Open on GitHub" :kbds="['meta', 'G']">
+      <UTooltip text="Open on GitHub">
         <UButton color="neutral" variant="ghost" to="https://github.com/nuxt/ui" target="_blank"
           icon="i-simple-icons-github" aria-label="GitHub" />
       </UTooltip>
+      <UButton v-if="isLoggedIn" color="error" variant="soft" @click="logout">LOGOUT</UButton>
     </template>
   </UHeader>
 </template>
