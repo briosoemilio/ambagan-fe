@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "df411eb125374de6086edd38dd739769088b60945052060aec1f57f934be3e27"
     },
+    "nuxt": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "9e8237ec92083db9a6f4c77d5e5bf4b1d9873d670671235bc75455ee1ca39c74"
+    },
     "nuxt-ui": {
       "source": "nuxt/ui",
       "sourceType": "github",

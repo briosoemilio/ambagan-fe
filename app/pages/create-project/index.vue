@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { uuid, z } from 'zod'
+import { z } from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { Project } from '~/schemas/Project'
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 type ProjectSchema = z.infer<typeof Project>
 
 const schema = Project
+const user = useUser()
 
 const state = reactive<Partial<ProjectSchema>>({
 	name: undefined,
@@ -17,12 +18,16 @@ const state = reactive<Partial<ProjectSchema>>({
 
 const toast = useToast()
 async function onSubmit(event: FormSubmitEvent<ProjectSchema>) {
-	const userid = uuidv4(); // TODO: Replace with actual user id when auth is ready
+	if (!user.value) {
+		toast.add({ title: 'Error', description: 'You must be logged in to create a project.', color: 'error' })
+		return
+	}
+	const userid = user.value.uid
 	const newProject = {
 		id: uuidv4(),
 		...event.data,
-		createdBy: userid, // TODO: Add logic to put user uid when auth is ready
-		members: [userid] // TODO: Add logic to put user uid when auth is ready
+		createdBy: userid,
+		members: [userid]
 	}
 	toast.add({ title: 'Success', description: 'Project successfully created!', color: 'success' })
 	console.log({ newProject })
