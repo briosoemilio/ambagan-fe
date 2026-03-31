@@ -4,12 +4,14 @@ import * as z from 'zod'
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 
 const auth = useFirebaseAuth()
+const toast = useToast()
 
 const state = reactive({
 	email: '',
 	password: ''
 })
-const error = ref('')
+const loading = ref(false)
+const loadingGoogle = ref(false)
 const isSignUp = ref(false)
 
 const schema = z.object({
@@ -20,74 +22,79 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const signInWithGoogle = async () => {
-	error.value = ''
 	if (!auth) {
-		error.value = 'Auth not initialized'
+		toast.add({ title: 'Error', description: 'Auth not initialized', color: 'error' })
 		return
 	}
+	loadingGoogle.value = true
 	try {
 		const provider = new GoogleAuthProvider()
 		await signInWithPopup(auth, provider)
 		navigateTo("/")
 	} catch (e: any) {
-		error.value = e.message
+		toast.add({ title: 'Error', description: e.message, color: 'error' })
 		console.log("Error during Google sign-in:", e)
+	} finally {
+		loadingGoogle.value = false
 	}
 }
 
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
-	error.value = ''
 	if (!auth) {
-		error.value = 'Auth not initialized'
+		toast.add({ title: 'Error', description: 'Auth not initialized', color: 'error' })
 		return
 	}
 
+	loading.value = true
 	try {
 		if (isSignUp.value) {
 			await createUserWithEmailAndPassword(auth, state.email, state.password)
 		} else {
 			await signInWithEmailAndPassword(auth, state.email, state.password)
 		}
+		toast.add({ title: 'Success', description: 'Logged in successfully!', color: 'success' })
 		navigateTo('/')
 	} catch (e: any) {
-		error.value = e.message
+		toast.add({ title: 'Authentication Error', description: e.message, color: 'error' })
 		console.error('Authentication error:', e)
+	} finally {
+		loading.value = false
 	}
 }
 </script>
 
 <template>
-	<UContainer class="flex-1 flex items-center">
-		<div class="flex flex-col">
-			<h1 class="text-3xl font-bold mb-6">{{ isSignUp ? 'Sign Up' : 'Login' }}</h1>
+	<UContainer class="flex-1 flex items-center justify-center">
+		<UCard class="w-full max-w-sm">
+			<template #header>
+				<h1 class="text-2xl font-bold text-center">{{ isSignUp ? 'Sign Up' : 'Login' }}</h1>
+			</template>
+
 			<UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-				<UFormField label="Email" name="email">
-					<UInput v-model="state.email" />
+				<UFormField label="Email" name="email" required>
+					<UInput v-model="state.email" icon="i-heroicons-envelope" class="w-full" />
 				</UFormField>
 
-				<UFormField label="Password" name="password">
-					<UInput v-model="state.password" type="password" />
+				<UFormField label="Password" name="password" required>
+					<UInput v-model="state.password" type="password" icon="i-heroicons-lock-closed" class="w-full" />
 				</UFormField>
 
-				<div class="flex items-center space-x-4">
-					<UButton type="submit">
-						{{ isSignUp ? 'SIGN UP' : 'LOGIN' }}
-					</UButton>
-					<UButton variant="link" @click="isSignUp = !isSignUp">
-						{{ isSignUp ? 'Have an account? Login' : "Don't have an account? Sign Up" }}
-					</UButton>
-				</div>
+				<UButton type="submit" block :loading="loading">
+					{{ isSignUp ? 'Sign Up' : 'Login' }}
+				</UButton>
+				
 			</UForm>
 
-			<div class="mt-5">
-				<div>or sign in using:</div>
-
-				<UTooltip text="Sign in with Google">
-					<UButton color="neutral" variant="ghost" class="mt-2 flex items-center gap-2"
-						icon="i-simple-icons-google" @click="signInWithGoogle" />
-				</UTooltip>
-				<div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
-			</div>
-		</div>
+			<template #footer>
+				<UButton class="mb-2 -mt-2" variant="link" block @click="isSignUp = !isSignUp">
+					{{ isSignUp ? 'Have an account? Login' : "Don't have an account? Sign Up" }}
+				</UButton>
+				<UButton variant="outline" color="primary" block @click="signInWithGoogle" :loading="loadingGoogle">
+					<UIcon name="i-simple-icons-google" class="mr-2" />
+					Sign in with Google
+				</UButton>
+				<UDivider label="OR" class="my-4" />
+			</template>
+		</UCard>
 	</UContainer>
 </template>
