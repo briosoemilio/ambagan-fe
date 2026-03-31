@@ -30,7 +30,7 @@ const signInWithGoogle = async () => {
 	try {
 		const provider = new GoogleAuthProvider()
 		await signInWithPopup(auth, provider)
-		navigateTo("/")
+		navigateTo("/projects")
 	} catch (e: any) {
 		toast.add({ title: 'Error', description: e.message, color: 'error' })
 		console.log("Error during Google sign-in:", e)
