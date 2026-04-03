@@ -32,18 +32,18 @@ defineProps<{
   >
     <div class="flex items-center gap-4">
       <UAvatar :src="ambag.contributor.photoUrl" :alt="ambag.contributor.name" size="md" />
-      <div class="flex flex-col items-start">
-        <p class="font-medium">{{ ambag.contributor.name }}</p>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+      <div class="flex flex-col items-start overflow-hidden">
+        <p class="font-medium truncate">{{ ambag.contributor.name }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-3/4 md:max-w-full">
           Date added: {{ new
             Date(ambag.createdAt._seconds * 1000).toLocaleDateString() }}</p>
       </div>
     </div>
-    <div class="text-right">
-      <p class="text-lg font-semibold">
+    <div class="text-right overflow-hidden">
+      <p class="text-lg font-semibold truncate">
         {{ new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(ambag.amount) }}
       </p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">{{ ambag.note }}</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ ambag.note }}</p>
     </div>
   </div>
 </template>
