@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Project } from '~/composables/api/types/Project';
+import { useDeleteProject } from '~/composables/api/projects/useDeleteProject';
+
 const props = defineProps<{ project: Project }>()
+const toast = useToast();
+const { mutateAsync, isPending } = useDeleteProject();
 
 const formattedTargetAmount = computed(() => {
   if (props.project.targetAmount === undefined) {
@@ -12,6 +16,21 @@ const formattedTargetAmount = computed(() => {
     currency: 'PHP',
   }).format(props.project.targetAmount);
 });
+
+const deleteProject = async () => {
+  if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+    return;
+  }
+  try {
+    const res = await mutateAsync(props.project.id);
+    if (res.status === 200) {
+      toast.add({ title: 'Project deleted successfully', color: 'success' });
+    }
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    toast.add({ title: 'Error deleting project', description: 'Please try again.', color: 'error' });
+  }
+}
 </script>
 
 <template>
@@ -21,7 +40,8 @@ const formattedTargetAmount = computed(() => {
         <h2 class="text-xl font-semibold truncate mb-2">
           {{ project?.name }}
         </h2>
-        <UButton icon="i-heroicons-trash" color="error" variant="ghost" />
+        <UButton icon="i-heroicons-trash" color="error" variant="ghost" @click.stop.prevent="deleteProject"
+          :loading="isPending" />
       </div>
       <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
         <UAvatar :src="project?.ownerAvatar?.src" :alt="project?.createdBy" size="xs" />
@@ -39,7 +59,8 @@ const formattedTargetAmount = computed(() => {
             <UIcon name="i-heroicons-check-circle" />
             <span>{{ project?.projectCompletion * 100 }}% Complete</span>
           </div>
-          <div v-else-if="project?.targetAmount" class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <div v-else-if="project?.targetAmount"
+            class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <UIcon name="i-heroicons-currency-dollar" />
             <span>Target: {{ formattedTargetAmount }}</span>
           </div>
