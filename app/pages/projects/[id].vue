@@ -52,7 +52,7 @@ const generateInviteLink = () => {
           <template #header>
             <div class="flex justify-between items-center">
               <h2 class="text-2xl font-semibold">Ambags</h2>
-              <UButton icon="i-heroicons-plus-circle">Ambag</UButton>
+              <AmbagsCreateAmbagModal />
             </div>
           </template>
           <!-- This is where you would list the "ambags". For now, it's a placeholder. -->
