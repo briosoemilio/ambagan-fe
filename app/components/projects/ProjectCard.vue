@@ -1,6 +1,17 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { Project } from '~/composables/api/types/Project';
 const props = defineProps<{ project: Project }>()
+
+const formattedTargetAmount = computed(() => {
+  if (props.project.targetAmount === undefined) {
+    return '';
+  }
+  return new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+  }).format(props.project.targetAmount);
+});
 </script>
 
 <template>
@@ -21,12 +32,16 @@ const props = defineProps<{ project: Project }>()
         <div>
           <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <UIcon name="i-heroicons-inbox-stack" />
-            <span>{{ project?.ambagsCount }} Ambags</span>
+            <span>{{ project?.ambagsCount || 0 }} Ambags</span>
           </div>
           <div v-if="project?.projectCompletion"
             class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <UIcon name="i-heroicons-check-circle" />
             <span>{{ project?.projectCompletion * 100 }}% Complete</span>
+          </div>
+          <div v-else-if="project?.targetAmount" class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <UIcon name="i-heroicons-currency-dollar" />
+            <span>Target: {{ formattedTargetAmount }}</span>
           </div>
         </div>
         <UAvatarGroup :max="2" v-if="project?.users">

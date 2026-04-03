@@ -8,4 +8,5 @@ export interface Project {
   ambagsCount?: number;
   projectCompletion?: number;
   users?: User[]
+  targetAmount?: number;
 }
