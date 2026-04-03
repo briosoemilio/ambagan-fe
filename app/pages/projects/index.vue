@@ -47,9 +47,7 @@ const projects = ref<Project[]>([
       <h1 class="text-3xl font-bold">
         My Projects
       </h1>
-      <UButton v-if="projects && projects.length > 0" to="/create-project" icon="i-heroicons-plus-circle-20-solid" size="lg">
-        Create Project
-      </UButton>
+      <ProjectsCreateProjectModal v-if="projects && projects.length > 0" buttonLabel="Create Project" />
     </div>
 
     <div v-if="projects && projects.length > 0">
@@ -65,9 +63,9 @@ const projects = ref<Project[]>([
       <p class="text-gray-500 dark:text-gray-400 mb-4">
         Get started by creating your first project.
       </p>
-      <UButton to="/create-project" icon="i-heroicons-plus-circle-20-solid" size="lg">
-        Create Your First Project
-      </UButton>
+      <ProjectsCreateProjectModal buttonLabel="Create Your First Project" />
     </div>
+
+
   </UContainer>
 </template>

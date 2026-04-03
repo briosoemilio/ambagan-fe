@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Project } from '~/schemas/Project';
 const props = defineProps<{ project: Project }>()
-console.log('Project Prop:', props.project)
 </script>
 
 <template>
