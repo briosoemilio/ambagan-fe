@@ -1,6 +1,13 @@
 <script setup>
+import { useGetUsers } from '~/composables/api/users/useGetUsers';
+
 const router = useRouter()
 const navToStart = () => router.push('/login')
+const { data } = useGetUsers();
+console.log(
+  'Users Data:',
+  data.value
+)
 
 const items = [{
   title: 'Ambag',
@@ -27,17 +34,10 @@ const items = [{
         Your personal tracker of your "Ambagan" goals.
       </p>
 
-      <UCarousel
-        v-slot="{ item }"
-        :items="items"
-        :ui="{
-          item: 'basis-full',
-          container: 'rounded-lg',
-        }"
-        autoplay
-        dots
-        class="mx-auto mb-10"
-      >
+      <UCarousel v-slot="{ item }" :items="items" :ui="{
+        item: 'basis-full',
+        container: 'rounded-lg',
+      }" autoplay dots class="mx-auto mb-10">
         <div class="text-center p-4">
           <UIcon :name="item.icon" class="text-4xl text-primary" />
           <h3 class="text-2xl font-bold mt-2">{{ item.title }}</h3>

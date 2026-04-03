@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.3.0",
+    "@tanstack/vue-query": "^5.96.1",
     "firebase": "^12.8.0",
     "nuxt": "^4.2.2",
     "nuxt-icons": "^4.0.0",
@@ -21,6 +22,7 @@
     "vue-currency-input": "^3.2.2",
     "vue-router": "^4.6.4",
     "vuefire": "^3.2.2",
+    "wretch": "^3.0.7",
     "zod": "^4.3.6"
   }
 }
