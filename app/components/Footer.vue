@@ -21,7 +21,7 @@ const items: NavigationMenuItem[] = [
 </script>
 
 <template>
-  <UFooter>
+  <UFooter class="bg-slate-100 dark:bg-slate-800">
     <template #left>
       <p class="text-muted text-sm">Froosh © 2026</p>
     </template>

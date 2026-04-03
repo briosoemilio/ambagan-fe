@@ -18,12 +18,10 @@ const logout = async () => {
 </script>
 
 <template>
-  <UHeader>
+  <UHeader class="bg-slate-100 dark:bg-slate-800">
     <template #title>
       <h1>Ambagan.io</h1>
     </template>
-
-
     <template #right>
       <UColorModeButton />
       <UTooltip text="Open on GitHub">
