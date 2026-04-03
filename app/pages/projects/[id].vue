@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useGetAmbag } from '~/composables/api/ambags/useGetAmbags';
 import { useGetSpecificProject } from '~/composables/api/projects/useGetSpecificProject';
 
 const route = useRoute();
 const projectId = computed(() => route.params.id);
 const { data: projectData, isPending } = useGetSpecificProject(projectId.value as string);
+const { data: ambagData, isPending: isAmbagPending } = useGetAmbag(projectId.value as string);
 
 const formattedTargetAmount = computed(() => {
   if (projectData.value?.targetAmount === undefined) {
@@ -55,9 +57,30 @@ const generateInviteLink = () => {
               <AmbagsCreateAmbagModal />
             </div>
           </template>
-          <!-- This is where you would list the "ambags". For now, it's a placeholder. -->
           <div class="text-center py-8">
-            <p class="text-gray-500 dark:text-gray-400">No ambags yet.</p>
+            <p v-if="isAmbagPending" class="text-gray-500 dark:text-gray-400">Loading ambags...</p>
+            <p v-else-if="ambagData && ambagData.length === 0" class="text-gray-500 dark:text-gray-400">No ambags yet.
+            </p>
+            <div v-else class="space-y-4">
+              <div v-for="ambag in ambagData" :key="ambag.id"
+                class="px-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                  <UAvatar :src="ambag.contributor.photoUrl" :alt="ambag.contributor.name" size="md" />
+                  <div class="flex flex-col items-start">
+                    <p class="font-medium">{{ ambag.contributor.name }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      Date added: {{ new
+                      Date(ambag.createdAt._seconds * 1000).toLocaleDateString() }}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-semibold">
+                    {{ new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(ambag.amount) }}
+                  </p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ ambag.note }}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </UCard>
       </div>

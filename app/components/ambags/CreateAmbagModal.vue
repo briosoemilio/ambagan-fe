@@ -2,7 +2,7 @@
 const route = useRoute();
 // Imports
 import { useCurrencyInput } from 'vue-currency-input'
-import { usePostCreateAmbag } from '~/composables/api/projects/usePostCreateAmbag'
+import { usePostCreateAmbag } from '~/composables/api/ambags/usePostCreateAmbag'
 import { addAmbagSchema, type AddAmbagDto } from '~/schemas/AddAmbag'
 
 const toast = useToast()
