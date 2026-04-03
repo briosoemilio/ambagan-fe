@@ -6,4 +6,4 @@ export const createProjectSchema = z.object({
   targetAmount: z.number().optional(),
 })
 
-export type CreateProject = z.infer<typeof createProjectSchema>
+export type CreateProjectDto = z.infer<typeof createProjectSchema>

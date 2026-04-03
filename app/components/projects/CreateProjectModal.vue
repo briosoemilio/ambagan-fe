@@ -1,29 +1,40 @@
 <script setup lang="ts">
 // Imports
-import { createProjectSchema, type CreateProject } from '~/schemas/CreateProject'
+import { createProjectSchema, type CreateProjectDto } from '~/schemas/CreateProject'
 import { useCurrencyInput } from 'vue-currency-input'
+import { usePostCreateProject } from '~/composables/api/projects/usePostCreateProject'
+
+const toast = useToast()
 
 // Props
 const props = defineProps<{ buttonLabel: string }>()
 
 // VUE Composition APIs
 const open = ref(false)
-const state = reactive<Partial<CreateProject>>({
+const state = reactive<CreateProjectDto>({
   name: '',
   description: '',
   targetAmount: 0,
 })
 
+// Composables
+const { mutateAsync, isPending } = usePostCreateProject()
+
 // Functions
 const closeModal = () => {
   open.value = false
 }
-const createProject = () => {
+const createProject = async () => {
   try {
-    // do create project
+    const res = await mutateAsync(state)
+    console.log("Create project res : ", { res })
+    if (res.status === 201) {
+      toast.add({ title: 'Successfully created a new project' })
+    }
   } catch (error) {
     console.error('Error creating project:', error)
   } finally {
+    console.log("will close")
     closeModal()
   }
 }
@@ -36,12 +47,16 @@ const { inputRef, numberValue } = useCurrencyInput({
   hideGroupingSeparatorOnFocus: false,
   precision: 2,
 })
+
+watch(numberValue, (newValue) => {
+  state.targetAmount = newValue ?? 0
+})
 </script>
 
 <template>
   <UModal v-model:open="open" title="Create New Project">
     <!-- Button -->
-    <UButton icon="i-heroicons-plus-circle-20-solid" size="lg">
+    <UButton icon="i-heroicons-plus-circle-20-solid" size="lg" @click="open = true">
       {{ props.buttonLabel }}
     </UButton>
     <!-- Content -->
@@ -51,7 +66,7 @@ const { inputRef, numberValue } = useCurrencyInput({
           <UInput v-model="state.name" class="w-full" />
         </UFormField>
         <UFormField label="Description" name="description">
-          <UTextarea v-model="state.description" class="w-full"/>
+          <UTextarea v-model="state.description" class="w-full" />
         </UFormField>
         <UFormField label="Target Amount" name="targetAmount" class="mt-3">
           <UInput ref="inputRef" type="text" class="w-full" />
@@ -64,7 +79,7 @@ const { inputRef, numberValue } = useCurrencyInput({
         <UButton color="neutral" variant="ghost" @click="closeModal">
           Cancel
         </UButton>
-        <UButton @click="createProject">
+        <UButton @click="createProject" :loading="isPending">
           Create Project
         </UButton>
       </div>
