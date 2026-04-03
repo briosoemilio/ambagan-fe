@@ -44,8 +44,8 @@ const deleteProject = async () => {
           :loading="isPending" />
       </div>
       <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
-        <UAvatar :src="project?.ownerAvatar?.src" :alt="project?.createdBy" size="xs" />
-        <span>{{ project?.createdBy }}</span>
+        <UAvatar :src="project?.owner?.photoUrl" :alt="project?.owner?.name" size="xs" />
+        <span>{{ project?.owner?.name }}</span>
       </div>
 
       <div class="flex justify-between items-center mt-4">

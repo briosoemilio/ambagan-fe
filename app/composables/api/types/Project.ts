@@ -4,7 +4,10 @@ export interface Project {
   id: string;
   name: string;
   createdBy: string;
-  ownerAvatar?: { src: string };
+  owner: {
+    name: string,
+    photoUrl: string,
+  }
   ambagsCount?: number;
   projectCompletion?: number;
   users?: User[]
