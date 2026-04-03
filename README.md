@@ -1,4 +1,6 @@
-# Nuxt Minimal Starter
+# Ambagan.io
+
+Ambagan.io is a collaborative platform for managing and tracking group contributions, whether for projects, events, or shared expenses. It simplifies the process of pooling resources and ensures transparency among participants.
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
