@@ -18,6 +18,7 @@
     "tailwindcss": "^4.1.18",
     "uuid": "^13.0.0",
     "vue": "^3.5.26",
+    "vue-currency-input": "^3.2.2",
     "vue-router": "^4.6.4",
     "vuefire": "^3.2.2",
     "zod": "^4.3.6"
