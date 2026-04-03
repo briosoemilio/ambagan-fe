@@ -31,10 +31,11 @@ const deleteProject = async () => {
     toast.add({ title: 'Error deleting project', description: 'Please try again.', color: 'error' });
   }
 }
+const goToProject = () => navigateTo(`/projects/${props.project.id}`);
 </script>
 
 <template>
-  <UCard class="cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700" variant="subtle">
+  <UCard @click="goToProject" class="cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700" variant="subtle">
     <div class="flex flex-col h-full">
       <div class="flex justify-between items-start">
         <h2 class="text-xl font-semibold truncate mb-2">
