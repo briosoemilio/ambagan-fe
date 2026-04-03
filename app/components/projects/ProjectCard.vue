@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project } from '~/schemas/Project';
+import type { Project } from '~/composables/api/types/Project';
 const props = defineProps<{ project: Project }>()
 </script>
 
@@ -8,28 +8,30 @@ const props = defineProps<{ project: Project }>()
     <div class="flex flex-col h-full">
       <div class="flex justify-between items-start">
         <h2 class="text-xl font-semibold truncate mb-2">
-          {{ project.name }}
+          {{ project?.name }}
         </h2>
         <UButton icon="i-heroicons-trash" color="error" variant="ghost" />
       </div>
       <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
-        <UAvatar :src="project.owner.avatar?.src" :alt="project.owner.name" size="xs" />
-        <span>{{ project.owner.name }}</span>
+        <UAvatar :src="project?.ownerAvatar?.src" :alt="project?.createdBy" size="xs" />
+        <span>{{ project?.createdBy }}</span>
       </div>
 
       <div class="flex justify-between items-center mt-4">
         <div>
           <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <UIcon name="i-heroicons-inbox-stack" />
-            <span>{{ project.ambagsCount }} Ambags</span>
+            <span>{{ project?.ambagsCount }} Ambags</span>
           </div>
-          <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <div v-if="project?.projectCompletion"
+            class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <UIcon name="i-heroicons-check-circle" />
-            <span>{{ project.projectCompletion * 100 }}% Complete</span>
+            <span>{{ project?.projectCompletion * 100 }}% Complete</span>
           </div>
         </div>
-        <UAvatarGroup :max="2">
-          <UAvatar v-for="user in project.users" :key="user.name" :src="user.avatar?.src" :alt="user.name" size="sm" />
+        <UAvatarGroup :max="2" v-if="project?.users">
+          <UAvatar v-for="user in project?.users" :key="user.name" :src="user?.photoURL || ''" :alt="user.name"
+            size="sm" />
         </UAvatarGroup>
       </div>
     </div>
