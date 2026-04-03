@@ -57,29 +57,12 @@ const generateInviteLink = () => {
               <AmbagsCreateAmbagModal />
             </div>
           </template>
-          <div class="text-center py-8">
-            <p v-if="isAmbagPending" class="text-gray-500 dark:text-gray-400">Loading ambags...</p>
+          <div class="text-center">
+            <AmbagsAmbagCard v-if="isAmbagPending" :isLoading="isAmbagPending" />
             <p v-else-if="ambagData && ambagData.length === 0" class="text-gray-500 dark:text-gray-400">No ambags yet.
             </p>
             <div v-else class="space-y-4">
-              <div v-for="ambag in ambagData" :key="ambag.id"
-                class="px-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                  <UAvatar :src="ambag.contributor.photoUrl" :alt="ambag.contributor.name" size="md" />
-                  <div class="flex flex-col items-start">
-                    <p class="font-medium">{{ ambag.contributor.name }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                      Date added: {{ new
-                      Date(ambag.createdAt._seconds * 1000).toLocaleDateString() }}</p>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-lg font-semibold">
-                    {{ new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(ambag.amount) }}
-                  </p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">{{ ambag.note }}</p>
-                </div>
-              </div>
+              <AmbagsAmbagCard v-for="ambag in ambagData" :key="ambag.id" :ambag="ambag" />
             </div>
           </div>
         </UCard>
