@@ -61,7 +61,7 @@ const projects = ref<Project[]>([
 
     <div v-if="projects.length > 0">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <UCard v-for="project in projects" :key="project.id" class="cursor-pointer" variant="subtle">
+        <UCard v-for="project in projects" :key="project.id" class="cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700" variant="subtle">
           <div class="flex flex-col h-full">
             <h2 class="text-xl font-semibold truncate mb-2">
               {{ project.name }}
