@@ -14,7 +14,6 @@ const file = ref<File | null>(null)
 const state = reactive<AddAmbagDto>({
   amount: 0,
   note: '',
-  photoUrl: '',
 })
 
 // Composables
@@ -32,7 +31,7 @@ const closeModal = () => {
 }
 const addAmbag = async () => {
   try {
-    let photoUrl = '';
+    let receipt;
     if (file.value) {
       const { body, status } = await uploadFile(file.value);
       if (status !== 200) {
@@ -40,13 +39,16 @@ const addAmbag = async () => {
         return;
       }
       toast.add({ title: 'Receipt uploaded successfully' });
-      photoUrl = body.photoUrl;
+      receipt = { 
+        photoUrl: body.photoUrl,
+        uploadId: body.uploadId
+      }
     }
 
     const res = await createAmbag({
       projectId: route.params.id as string,
       ...state,
-      photoUrl,
+      receipt,
     })
 
     if (res.status === 201) {

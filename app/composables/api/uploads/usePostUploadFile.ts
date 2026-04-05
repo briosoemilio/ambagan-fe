@@ -4,6 +4,7 @@ import wretch from "../wretch";
 
 interface UploadResponse {
   photoUrl: string;
+  uploadId: string;
 }
 
 export const usePostUploadFile = () => {
