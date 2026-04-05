@@ -1,15 +1,47 @@
 <script setup lang="ts">
+import { useDeleteAmbag } from '~/composables/api/ambags/useDeleteAmbag';
 import type { Ambag } from '~/composables/api/types/Ambag';
 
-defineProps<{
+const props = defineProps<{
   ambag: Ambag;
 }>();
 
 const open = defineModel<boolean>('open', { default: false });
+
+const { mutateAsync: deleteAmbagApi } = useDeleteAmbag();
+const deleteAmbag = async () => {
+  if (!confirm('Are you sure you want to delete this ambag? This action cannot be undone.')) {
+    return;
+  }
+  try {
+    const deleteAmbagRes = await deleteAmbagApi(props.ambag.id as string);
+    if (deleteAmbagRes.status === 200) {
+      open.value = false;
+      useToast().add({ title: 'Ambag deleted successfully' });
+    }
+  } catch (error) {
+    console.error('Failed to delete ambag', error);
+    useToast().add({ title: 'Failed to delete ambag', color: 'error' });
+  }
+}
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Ambag Details">
+  <UModal v-model:open="open">
+    <template #header>
+      <div class="flex justify-between items-center w-full">
+        <h2 class="text-lg font-semibold">Ambag Details</h2>
+        <div class="flex gap-2">
+          <UTooltip text="Edit Ambag">
+            <UButton icon="i-heroicons-pencil-square" color="warning" variant="ghost" />
+          </UTooltip>
+          <UTooltip text="Delete Ambag">
+            <UButton icon="i-heroicons-trash" color="error" variant="ghost" @click="deleteAmbag" />
+          </UTooltip>
+        </div>
+      </div>
+    </template>
+
     <template #body>
       <div class="space-y-4">
         <div class="flex items-center gap-4">
@@ -42,7 +74,7 @@ const open = defineModel<boolean>('open', { default: false });
     </template>
 
     <template #footer>
-      <div class="flex justify-end">
+      <div class="flex justify-end w-full">
         <UButton color="neutral" variant="ghost" @click="open = false">
           Close
         </UButton>
