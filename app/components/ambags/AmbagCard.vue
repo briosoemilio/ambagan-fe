@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Ambag } from '~/composables/api/types/Ambag';
 
-defineProps<{
+const props = defineProps<{
   ambag?: Ambag;
   isLoading?: boolean;
 }>();
+
+const isModalOpen = ref(false);
 </script>
 
 <template>
@@ -28,7 +30,8 @@ defineProps<{
   <!-- Ambag Card -->
   <div
     v-else-if="ambag"
-    class="px-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center"
+    class="px-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition flex justify-between items-center cursor-pointer"
+    @click="isModalOpen = true"
   >
     <div class="flex items-center gap-4">
       <UAvatar :src="ambag.contributor.photoUrl" :alt="ambag.contributor.name" size="md" />
@@ -46,4 +49,6 @@ defineProps<{
       <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ ambag.note }}</p>
     </div>
   </div>
+
+  <AmbagsViewAmbagModal v-if="ambag" v-model:open="isModalOpen" :ambag="ambag" />
 </template>

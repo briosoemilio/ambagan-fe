@@ -8,6 +8,10 @@ export interface Ambag {
   amount: number;
   updatedBy: string;
   updatedAt: Date;
+  receipt?: {
+    photoUrl: string;
+    uploadId: string;
+  }
 }
 
 export interface Contributor {
