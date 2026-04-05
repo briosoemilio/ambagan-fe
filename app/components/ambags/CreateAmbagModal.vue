@@ -3,31 +3,52 @@ const route = useRoute();
 // Imports
 import { useCurrencyInput } from 'vue-currency-input'
 import { usePostCreateAmbag } from '~/composables/api/ambags/usePostCreateAmbag'
+import { usePostUploadFile } from '~/composables/api/uploads/usePostUploadFile'
 import { addAmbagSchema, type AddAmbagDto } from '~/schemas/AddAmbag'
 
 const toast = useToast()
 
 // VUE Composition APIs
 const open = ref(false)
+const file = ref<File | null>(null)
 const state = reactive<AddAmbagDto>({
   amount: 0,
   note: '',
+  photoUrl: '',
 })
 
 // Composables
-const { mutateAsync, isPending } = usePostCreateAmbag()
+const { mutateAsync: createAmbag, isPending: isCreating } = usePostCreateAmbag()
+const { mutateAsync: uploadFile, isPending: isUploading } = usePostUploadFile()
 
 // Functions
+const onFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  file.value = input.files?.[0] ?? null;
+};
+
 const closeModal = () => {
   open.value = false
 }
 const addAmbag = async () => {
   try {
-    const res = await mutateAsync({
+    let photoUrl = '';
+    if (file.value) {
+      const { body, status } = await uploadFile(file.value);
+      if (status !== 200) {
+        toast.add({ title: 'Failed to upload receipt', color: 'error' });
+        return;
+      }
+      toast.add({ title: 'Receipt uploaded successfully' });
+      photoUrl = body.photoUrl;
+    }
+
+    const res = await createAmbag({
       projectId: route.params.id as string,
-      ...state
+      ...state,
+      photoUrl,
     })
-    console.log("Create ambag res : ", { res })
+
     if (res.status === 201) {
       toast.add({ title: 'Successfully added a new ambag' })
     }
@@ -35,7 +56,6 @@ const addAmbag = async () => {
     console.error('Error creating ambag:', error)
     toast.add({ title: 'Failed to add a new ambag', color: 'error' })
   } finally {
-    console.log("will close")
     closeModal()
   }
 }
@@ -64,8 +84,11 @@ watch(numberValue, (newValue) => {
         <UFormField label="Amount" name="amount" class="mb-3">
           <UInput ref="inputRef" type="text" class="w-full" />
         </UFormField>
-        <UFormField label="Note" name="note">
+        <UFormField label="Note" name="note" class="mb-3">
           <UTextarea v-model="state.note" class="w-full" />
+        </UFormField>
+        <UFormField label="Receipt (Optional)" name="file">
+          <UInput type="file" @change="onFileChange" />
         </UFormField>
       </UForm>
     </template>
@@ -75,7 +98,7 @@ watch(numberValue, (newValue) => {
         <UButton color="neutral" variant="ghost" @click="closeModal">
           Cancel
         </UButton>
-        <UButton @click="addAmbag" :loading="isPending">
+        <UButton @click="addAmbag" :loading="isCreating || isUploading">
           Add Ambag
         </UButton>
       </div>
