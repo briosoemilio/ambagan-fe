@@ -7,7 +7,7 @@ interface UploadResponse {
   uploadId: string;
 }
 
-export const usePostUploadFile = () => {
+export const usePostUploadFile = (projectId: string, projectName: string) => {
   const currentUser = useCurrentUser();
   return useMutation<{ body: UploadResponse; status: number }, Error, File>({
     mutationKey: [QUERY_KEYS.UPLOADS, "postFile"],
@@ -21,7 +21,7 @@ export const usePostUploadFile = () => {
       formData.append("file", file);
 
       const response = await wretch(token)
-        .url("/ambags/upload")
+        .url(`/ambags/upload?projectId=${projectId}&projectName=${projectName}`)
         .post(formData)
         .res();
 

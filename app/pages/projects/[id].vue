@@ -54,7 +54,7 @@ const generateInviteLink = () => {
           <template #header>
             <div class="flex justify-between items-center">
               <h2 class="text-2xl font-semibold">Ambags</h2>
-              <AmbagsCreateAmbagModal />
+              <AmbagsCreateAmbagModal :projectName="projectData.name"/>
             </div>
           </template>
           <div class="text-center">

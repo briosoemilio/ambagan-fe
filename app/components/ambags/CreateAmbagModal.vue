@@ -1,4 +1,9 @@
 <script setup lang="ts">
+// props
+const props = defineProps<{
+  projectName: string;
+}>()
+
 const route = useRoute();
 // Imports
 import { useCurrencyInput } from 'vue-currency-input'
@@ -18,7 +23,7 @@ const state = reactive<AddAmbagDto>({
 
 // Composables
 const { mutateAsync: createAmbag, isPending: isCreating } = usePostCreateAmbag()
-const { mutateAsync: uploadFile, isPending: isUploading } = usePostUploadFile()
+const { mutateAsync: uploadFile, isPending: isUploading } = usePostUploadFile(route.params.id as string, props.projectName)
 
 // Functions
 const onFileChange = (event: Event) => {
